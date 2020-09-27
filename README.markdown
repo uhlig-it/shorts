@@ -1,8 +1,8 @@
 # Shorts
 
-Poor man's [bit.ly](https:/bitly.com). Given a map of urls in the config file, it will respond to a known (short) key with a redirect to the long URL.
+Poor man's [bit.ly](https://bitly.com). Given a map of urls in the config file, it will respond to a known (short) key with a redirect to the long URL.
 
-It's pricacy-friendly. There is no tracking, logging, nor stats.
+It's pricacy-friendly. There is no tracking, no logging, and no stats.
 
 # Deploy
 
