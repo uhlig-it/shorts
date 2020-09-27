@@ -55,8 +55,8 @@ func main() {
 	fmt.Printf("Listening at %s\n", listener.Addr())
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		path := r.URL.Path[1:]
-		long := urls[path]
+		short := r.URL.Path[1:]
+		long := urls[short]
 
 		if long == "" {
 			http.Error(w, "Not found", http.StatusNotFound)
