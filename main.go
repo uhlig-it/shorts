@@ -4,9 +4,9 @@ import (
 	"flag"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net"
 	"net/http"
+	"os"
 
 	"gopkg.in/yaml.v2"
 )
@@ -16,7 +16,7 @@ var configFile = flag.String("urls", "/etc/shorts.yml", "path to the config file
 var port = flag.Int("port", 0, "port to bind to. Defaults to 0 (dynamic), so you will have to check the output to see which port was dynamically assigned.")
 
 func readURLs(configFile string) error {
-	log.Printf("Reading URLs from %s\n", configFile)
+	fmt.Printf("Reading URLs from %s\n", configFile)
 
 	yamlFile, err := ioutil.ReadFile(configFile)
 
@@ -29,7 +29,7 @@ func readURLs(configFile string) error {
 	}
 
 	for short, long := range urls {
-		log.Printf("%s => %s", short, long)
+		fmt.Printf("%s => %s\n", short, long)
 	}
 
 	return nil
@@ -52,18 +52,24 @@ func main() {
 	err := readURLs(*configFile)
 
 	if err != nil {
-		log.Fatalf(err.Error())
+		fmt.Printf("Error: %s\n", err.Error())
+		os.Exit(1)
 	}
 
 	bindAddress := fmt.Sprintf("localhost:%d", *port)
 	listener, err := net.Listen("tcp", bindAddress)
 
 	if err != nil {
-		log.Fatalf("Unable to start listening on %s #%v", bindAddress, err)
+		fmt.Printf("Unable to start listening on %s #%v\n", bindAddress, err)
+		os.Exit(1)
 	}
 
-	log.Printf("Listening at %s", listener.Addr())
+	fmt.Printf("Listening at %s\n", listener.Addr())
 
 	http.HandleFunc("/", handler)
-	log.Fatal(http.Serve(listener, nil))
+
+	if err := http.Serve(listener, nil); err != nil {
+		fmt.Printf("Error: %s\n", err.Error())
+		os.Exit(1)
+	}
 }
