@@ -1,0 +1,29 @@
+---
+- name: Deploy the Shorts application
+  hosts: all
+  become: true
+  gather_facts: true
+
+  vars: # check secrets.yml for others
+    service_binary: ../shorts
+
+  tasks:
+    - name: Config file is copied
+    # TODO
+
+  roles:
+    - role: suhlig.simple_systemd_service
+      become: true
+      vars:
+        program:
+          name: shorts
+          description: Shorts URL shortener
+          binary: "{{ service_binary }}"
+#        deployment_event_url: "{{ influxdb_url }}"
+      tags: [ shorts, url, shortener, systemd, service ]
+    - role: suhlig.caddy_reverse_proxy
+      become: true
+      vars:
+        caddy_domain: "{{ shorts_fqdn }}"
+        caddy_port: "{{ shorts_port }}"
+      tags: [ shorts, url, shortener, caddy, proxy ]
