@@ -8,8 +8,12 @@
     service_binary: ../shorts
 
   tasks:
-    - name: Config file is copied
-    # TODO
+    - name: Config file is present
+      become: true
+      copy:
+        src: shorts.yml
+        dest: /etc/shorts.yml
+        mode: '0644'
 
   roles:
     - role: suhlig.simple_systemd_service
@@ -19,7 +23,9 @@
           name: shorts
           description: Shorts URL shortener
           binary: "{{ service_binary }}"
-#        deployment_event_url: "{{ influxdb_url }}"
+          parameters:
+            - "-port {{ shorts_port }}"
+            - "-urls /etc/shorts.yml"
       tags: [ shorts, url, shortener, systemd, service ]
     - role: suhlig.caddy_reverse_proxy
       become: true
