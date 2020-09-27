@@ -35,18 +35,6 @@ func readURLs(configFile string) error {
 	return nil
 }
 
-func handler(w http.ResponseWriter, r *http.Request) {
-	path := r.URL.Path[1:]
-	long := urls[path]
-
-	if long == "" {
-		http.Error(w, "Not found", http.StatusNotFound)
-
-	} else {
-		http.Redirect(w, r, long, http.StatusSeeOther)
-	}
-}
-
 func main() {
 	flag.Parse()
 	err := readURLs(*configFile)
@@ -66,7 +54,17 @@ func main() {
 
 	fmt.Printf("Listening at %s\n", listener.Addr())
 
-	http.HandleFunc("/", handler)
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		path := r.URL.Path[1:]
+		long := urls[path]
+
+		if long == "" {
+			http.Error(w, "Not found", http.StatusNotFound)
+
+		} else {
+			http.Redirect(w, r, long, http.StatusSeeOther)
+		}
+	})
 
 	if err := http.Serve(listener, nil); err != nil {
 		fmt.Printf("Error: %s\n", err.Error())
