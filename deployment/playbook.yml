@@ -14,6 +14,7 @@
         src: shorts.yml
         dest: /etc/shorts.yml
         mode: '0644'
+      tags: [ shorts, yaml, config ]
 
   roles:
     - role: suhlig.simple_systemd_service

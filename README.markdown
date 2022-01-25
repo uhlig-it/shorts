@@ -22,4 +22,4 @@ $ ansible-playbook playbook.yml -i foo.example.com,
 
 # TODO
 
-* fswatch the config file and reload the URLs when changed (saves a restart when just the URLs are re-deployed)
+* [fswatch](https://github.com/fsnotify/fsnotify) the config file and reload the URLs when changed (saves a restart when just the URLs are re-deployed)
