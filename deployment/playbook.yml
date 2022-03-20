@@ -14,7 +14,15 @@
         src: shorts.yml
         dest: /etc/shorts.yml
         mode: '0644'
+      register: config_copied
       tags: [ shorts, yaml, config ]
+
+    - name: Service is restarted
+      systemd:
+        name: shorts.service
+        state: restarted
+      when: config_copied.changed
+      tags: [ systemd, service ]
 
   roles:
     - role: suhlig.simple_systemd_service
