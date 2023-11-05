@@ -3,10 +3,8 @@
   hosts: all
   become: true
   gather_facts: true
-
   vars: # check secrets.yml for others
     service_binary: ../shorts
-
   tasks:
     - name: Config file is present
       become: true
@@ -16,14 +14,12 @@
         mode: '0644'
       register: config_copied
       tags: [ shorts, yaml, config ]
-
     - name: Service is restarted
       systemd:
         name: shorts.service
         state: restarted
       when: config_copied.changed
       tags: [ systemd, service ]
-
   roles:
     - role: suhlig.simple_systemd_service
       become: true
@@ -33,8 +29,10 @@
           description: Shorts URL shortener
           binary: "{{ service_binary }}"
           parameters:
-            - "-port {{ shorts_port }}"
-            - "-urls /etc/shorts.yml"
+            - -port
+            - "{{ shorts_port }}"
+            - -urls
+            - /etc/shorts.yml
       tags: [ shorts, url, shortener, systemd, service ]
     - role: suhlig.caddy_reverse_proxy
       become: true
