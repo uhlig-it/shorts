@@ -6,6 +6,7 @@ import (
 	"net"
 	"net/http"
 	"os"
+	"time"
 
 	"go.yaml.in/yaml/v4"
 )
@@ -17,14 +18,15 @@ var port = flag.Int("port", 0, "port to bind to. Defaults to 0 (dynamic), so you
 func readURLs(configFile string) error {
 	fmt.Printf("Reading URLs from %s\n", configFile)
 
+	// #nosec G304 -- file path comes from the -urls flag; reading arbitrary paths is intended.
 	yamlFile, err := os.ReadFile(configFile)
 
 	if err != nil {
-		return fmt.Errorf("Unable to read config file: #%v", err)
+		return fmt.Errorf("unable to read config file: #%v", err)
 	}
 
 	if err := yaml.Unmarshal(yamlFile, &urls); err != nil {
-		return fmt.Errorf("Unable to parse config file %s: #%v", configFile, err)
+		return fmt.Errorf("unable to parse config file %s: #%v", configFile, err)
 	}
 
 	for short, long := range urls {
@@ -65,7 +67,12 @@ func main() {
 		}
 	})
 
-	if err := http.Serve(listener, nil); err != nil {
+	server := &http.Server{
+		ReadHeaderTimeout: 5 * time.Second,
+		IdleTimeout:       60 * time.Second,
+	}
+
+	if err := server.Serve(listener); err != nil {
 		fmt.Printf("Error: %s\n", err.Error())
 		os.Exit(1)
 	}

@@ -4,7 +4,9 @@
   become: true
   gather_facts: true
   vars: # check secrets.yml for others
-    service_binary: ../shorts
+    # Released as a tarball by the release workflow (see README); adjust the
+    # tag to an existing GitHub release before deploying.
+    service_binary: https://github.com/uhlig-it/shorts/releases/download/v0.1.0/shorts-linux-amd64.tar.gz
   tasks:
     - name: Config file is present
       become: true
