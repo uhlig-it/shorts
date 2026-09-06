@@ -28,6 +28,7 @@
           name: shorts
           description: Shorts URL shortener
           binary: "{{ service_binary }}"
+          runtime_user: shorts
           parameters:
             - -port
             - "{{ shorts_port }}"

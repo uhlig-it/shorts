@@ -1,1 +1,2 @@
 - src: suhlig.caddy_reverse_proxy
+- src: uhlig-it.simple_systemd_service

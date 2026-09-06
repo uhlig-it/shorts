@@ -3,12 +3,11 @@ package main
 import (
 	"flag"
 	"fmt"
-	"io/ioutil"
 	"net"
 	"net/http"
 	"os"
 
-	"gopkg.in/yaml.v2"
+	"go.yaml.in/yaml/v4"
 )
 
 var urls map[string]string
@@ -18,7 +17,7 @@ var port = flag.Int("port", 0, "port to bind to. Defaults to 0 (dynamic), so you
 func readURLs(configFile string) error {
 	fmt.Printf("Reading URLs from %s\n", configFile)
 
-	yamlFile, err := ioutil.ReadFile(configFile)
+	yamlFile, err := os.ReadFile(configFile)
 
 	if err != nil {
 		return fmt.Errorf("Unable to read config file: #%v", err)

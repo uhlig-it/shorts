@@ -7,7 +7,7 @@ It's pricacy-friendly. There is no tracking, no logging, and no stats.
 # Build
 
 ```command
-$ GOOS=linux go build
+$ GOOS=linux GOARCH=amd64 go build
 ```
 
 # Deploy
