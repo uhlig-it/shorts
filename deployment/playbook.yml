@@ -5,8 +5,23 @@
   gather_facts: true
   vars: # check secrets.yml for others
     # Released as a tarball by the release workflow (see README); adjust the
-    # tag to an existing GitHub release before deploying.
-    service_binary: https://github.com/uhlig-it/shorts/releases/download/v0.1.0/shorts-linux-amd64.tar.gz
+    # tag to an existing GitHub release before deploying. The SHA-256 is not
+    # hardcoded: the .sha256 file that the Release workflow attaches next to
+    # each archive is fetched by a pre-task and read back on the controller,
+    # so bumping this variable is the only manual step (the release must
+    # exist).
+    shorts_version: v0.1.0
+    shorts_checksum_file: "/tmp/shorts-{{ shorts_version }}.sha256"
+  pre_tasks:
+    - name: Fetch the release's SHA-256 checksum (controller-side)
+      ansible.builtin.command:
+        cmd: >-
+          curl -fsSL --max-time 60 -o {{ shorts_checksum_file }}
+          https://github.com/uhlig-it/shorts/releases/download/{{ shorts_version }}/shorts-linux-amd64.tar.gz.sha256
+      delegate_to: localhost
+      become: false
+      changed_when: false
+      tags: [ checksum ]
   tasks:
     - name: Config file is present
       become: true
@@ -29,7 +44,10 @@
         program:
           name: shorts
           description: Shorts URL shortener
-          binary: "{{ service_binary }}"
+          binary: >-
+            https://github.com/uhlig-it/shorts/releases/download/{{ shorts_version }}/shorts-linux-amd64.tar.gz
+          binary_checksum: >-
+            sha256:{{ (lookup('file', shorts_checksum_file) | trim | split(' '))[0] }}
           runtime_user: shorts
           parameters:
             - -port
