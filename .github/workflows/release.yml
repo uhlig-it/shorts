@@ -40,7 +40,7 @@ jobs:
         with:
           path: artifacts
           merge-multiple: true
-      - name: Produce SHA-256 checksums (consumed by deployment/playbook.yml's binary_checksum)
+      - name: Produce SHA-256 checksums (consumed by playbooks/services/shorts.yml's binary_checksum)
         run: |
           cd artifacts
           for f in *.tar.gz; do
@@ -49,3 +49,9 @@ jobs:
       - uses: softprops/action-gh-release@efb35369e0ad2afab669f228072c1b0d510eae64 # v3
         with:
           files: artifacts/*.tar.gz artifacts/*.sha256
+  deploy:
+    needs: release
+    uses: uhlig-it/infrastructure/.github/workflows/deploy.yml@main
+    with:
+      service: shorts
+    secrets: inherit

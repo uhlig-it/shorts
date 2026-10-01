@@ -22,18 +22,3 @@ jobs:
         run: go vet ./...
       - name: Test
         run: go test ./...
-  syntax-check:
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: deployment
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # actions/checkout@v7
-      - name: Install Ansible
-        run: |
-          python3 -m venv /tmp/ansible
-          /tmp/ansible/bin/pip install ansible-core
-      - name: Install the roles
-        run: /tmp/ansible/bin/ansible-galaxy role install -r requirements.yml
-      - name: Syntax check the playbook
-        run: /tmp/ansible/bin/ansible-playbook --syntax-check playbook.yml

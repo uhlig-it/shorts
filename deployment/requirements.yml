@@ -1,4 +1,0 @@
-- src: suhlig.caddy_reverse_proxy
-- name: uhlig-it.simple_systemd_service
-  src: https://github.com/uhlig-it/ansible-role-simple-systemd-service
-  version: master
